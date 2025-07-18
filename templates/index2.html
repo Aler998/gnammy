@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terrarium Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        .custom-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .terrarium-card {
+            transition: all 0.3s ease;
+        }
+        .terrarium-card:hover {
+            transform: translateY(-5px);
+        }
+        .water-level {
+            background: linear-gradient(to top, #3b82f6 0%, #3b82f6 var(--level), #e5e7eb var(--level), #e5e7eb 100%);
+        }
+        .moisture-level {
+            background: linear-gradient(to right, #10b981 0%, #10b981 var(--level), #e5e7eb var(--level), #e5e7eb 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Terrarium Dashboard</h1>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Terrarium 1 -->
+            <div class="terrarium-card bg-white rounded-xl p-6 custom-shadow">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-700">Terrarium #1</h2>
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Active</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Score Chart -->
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-3">Health Score</h3>
+                        <div class="relative h-48">
+                            <canvas id="scoreChart1"></canvas>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-2xl font-bold text-gray-700">82%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Current Readings -->
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-3">Current Readings</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-600">Water Level</span>
+                                    <span class="text-sm font-medium text-gray-600">65%</span>
+                                </div>
+                                <div class="water-level h-3 rounded-full" style="--level: 65%"></div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-600">Moisture</span>
+                                    <span class="text-sm font-medium text-gray-600">78%</span>
+                                </div>
+                                <div class="moisture-level h-3 rounded-full" style="--level: 78%"></div>
+                            </div>
+                            
+                            <div class="grid grid-cols-3 gap-2">
+                                <div class="bg-blue-50 p-3 rounded-lg text-center">
+                                    <p class="text-xs text-blue-600">Temperature</p>
+                                    <p class="text-xl font-bold text-blue-800">24.5°C</p>
+                                </div>
+                                <div class="bg-purple-50 p-3 rounded-lg text-center">
+                                    <p class="text-xs text-purple-600">Humidity</p>
+                                    <p class="text-xl font-bold text-purple-800">65%</p>
+                                </div>
+                                <div class="bg-amber-50 p-3 rounded-lg text-center">
+                                    <p class="text-xs text-amber-600">Pressure</p>
+                                    <p class="text-xl font-bold text-amber-800">1012 hPa</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Temperature History -->
+                <div class="mt-6">
+                    <h3 class="text-lg font-medium text-gray-700 mb-3">Temperature History (Last 15 readings)</h3>
+                    <div class="h-48">
+                        <canvas id="tempChart1"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Terrarium 2 -->
+            <div class="terrarium-card bg-white rounded-xl p-6 custom-shadow">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-700">Terrarium #2</h2>
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Active</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Score Chart -->
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-3">Health Score</h3>
+                        <div class="relative h-48">
+                            <canvas id="scoreChart2"></canvas>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-2xl font-bold text-gray-700">74%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Current Readings -->
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-3">Current Readings</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-600">Water Level</span>
+                                    <span class="text-sm font-medium text-gray-600">42%</span>
+                                </div>
+                                <div class="water-level h-3 rounded-full" style="--level: 42%"></div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-600">Moisture</span>
+                                    <span class="text-sm font-medium text-gray-600">65%</span>
+                                </div>
+                                <div class="moisture-level h-3 rounded-full" style="--level: 65%"></div>
+                            </div>
+                            
+                            <div class="grid grid-cols-3 gap-2">
+                                <div class="bg-blue-50 p-3 rounded-lg text-center">
+                                    <p class="text-xs text-blue-600">Temperature</p>
+                                    <p class="text-xl font-bold text-blue-800">22.8°C</p>
+                                </div>
+                                <div class="bg-purple-50 p-3 rounded-lg text-center">
+                                    <p class="text-xs text-purple-600">Humidity</p>
+                                    <p class="text-xl font-bold text-purple-800">72%</p>
+                                </div>
+                                <div class="bg-amber-50 p-3 rounded-lg text-center">
+                                    <p class="text-xs text-amber-600">Pressure</p>
+                                    <p class="text-xl font-bold text-amber-800">1015 hPa</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Temperature History -->
+                <div class="mt-6">
+                    <h3 class="text-lg font-medium text-gray-700 mb-3">Temperature History (Last 15 readings)</h3>
+                    <div class="h-48">
+                        <canvas id="tempChart2"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-8 text-center text-gray-500 text-sm">
+            <p>Last updated: <span id="lastUpdated">Just now</span></p>
+            <button id="refreshBtn" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-sync-alt mr-2"></i>Refresh Data
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Set last updated time
+        document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+        
+        // Refresh button functionality
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            // Simulate data refresh
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+            
+            // In a real app, you would fetch new data here
+            console.log("Refreshing data...");
+            
+            // Show loading state
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Refreshing...';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-sync-alt mr-2"></i>Refresh Data';
+            }, 1000);
+        });
+        
+        // Score Charts
+        const scoreChart1 = new Chart(
+            document.getElementById('scoreChart1'),
+            {
+                type: 'doughnut',
+                data: {
+                    labels: ['Score', 'Remaining'],
+                    datasets: [{
+                        data: [82, 18],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(229, 231, 235, 0.8)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    cutout: '75%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        );
+        
+        const scoreChart2 = new Chart(
+            document.getElementById('scoreChart2'),
+            {
+                type: 'doughnut',
+                data: {
+                    labels: ['Score', 'Remaining'],
+                    datasets: [{
+                        data: [74, 26],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(229, 231, 235, 0.8)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    cutout: '75%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        );
+        
+        // Temperature History Charts
+        const labels = Array.from({length: 15}, (_, i) => (i + 1) + 'h ago').reverse();
+        
+        const tempChart1 = new Chart(
+            document.getElementById('tempChart1'),
+            {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Temperature (°C)',
+                        data: [23.5, 23.7, 23.9, 24.1, 24.3, 24.5, 24.3, 24.2, 24.0, 23.8, 23.7, 23.6, 23.5, 23.4, 23.3],
+                        borderColor: 'rgba(59, 130, 246, 0.8)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 22,
+                            max: 25
+                        }
+                    }
+                }
+            }
+        );
+        
+        const tempChart2 = new Chart(
+            document.getElementById('tempChart2'),
+            {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Temperature (°C)',
+                        data: [22.0, 22.2, 22.4, 22.5, 22.7, 22.8, 22.7, 22.6, 22.5, 22.4, 22.3, 22.2, 22.1, 22.0, 21.9],
+                        borderColor: 'rgba(59, 130, 246, 0.8)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 20,
+                            max: 23
+                        }
+                    }
+                }
+            }
+        );
+    </script>
+</body>
+</html>
