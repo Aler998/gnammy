@@ -34,6 +34,8 @@ function getMood(score) {
 }
 
 const source = new EventSource('/stream');
+// const source = new EventSource('http://localhost:8000/stream');
+
 
 source.onmessage = function (event) {
   const data = JSON.parse(event.data);
@@ -43,7 +45,7 @@ source.onmessage = function (event) {
     data.terrari.map(async (terrario, index) => {
       const { color, class: moodClass } = getMood(terrario.score);
       
-      document.querySelectorAll(".box")[index].setAttribute("class", `box ${moodClass}`);
+      // document.querySelectorAll(".box")[index].setAttribute("class", `box ${moodClass}`);
 
       if (firstTime[index]) {
         initCharts(terrario, color, index);
@@ -55,9 +57,12 @@ source.onmessage = function (event) {
       document.querySelectorAll(".current-humidity")[index].innerHTML = Math.round(terrario.h).toString() + "%"
       document.querySelectorAll(".current-temperature")[index].innerHTML = Math.round(terrario.t).toString() + "&#8451;"
       document.querySelectorAll(".current-pressure")[index].innerHTML = (Math.round(terrario.p / 10.13) / 100).toString() + "atm"
-      console.log(terrario.wl);
+      // console.log(terrario.wl);
       
-      document.querySelectorAll('.fill')[index].style.height = (Math.round(terrario.wl)).toString() + '%';
+      document.querySelectorAll('.ml')[index].setAttribute("style", `--level: ${(Math.round(terrario.ml)).toString()}%`);
+      document.querySelectorAll('.ml-label')[index].innerHTML = (Math.round(terrario.ml)).toString() + '%'
+      document.querySelectorAll('.wl')[index].setAttribute("style", `--level: ${(Math.round(terrario.wl)).toString()}%`);
+      document.querySelectorAll('.wl-label')[index].innerHTML = (Math.round(terrario.wl)).toString() + '%'
 
     })
   }

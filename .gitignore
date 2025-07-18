@@ -3,3 +3,4 @@ venv
 __pycache__
 sensor_data.json
 sensor_data2.json
+dev
