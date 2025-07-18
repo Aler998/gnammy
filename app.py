@@ -17,7 +17,7 @@ i2c = board.I2C() # uses board.SCL and board.SDA
 tca = adafruit_tca9548a.TCA9548A(i2c)
 
 def initADS():
-    for i in 5:
+    for i in range(5):
         try:
             return ADS.ADS1115(tca[5])
         except:
@@ -40,7 +40,7 @@ redLeds = [LED(27), LED(23)]
 
 
 def initBME():
-    for i in 5:
+    for i in range(5):
         try:
             return [adafruit_bme280.Adafruit_BME280_I2C(tca[2], address=0x76), adafruit_bme280.Adafruit_BME280_I2C(tca[3], address=0x76)]
         except:
@@ -152,5 +152,5 @@ def index2():
 def stream():
     return Response(read_data(), mimetype='text/event-stream')
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=5000)
