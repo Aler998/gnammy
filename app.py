@@ -15,7 +15,17 @@ WATER_LEVEL_MAX = 14000
 
 i2c = board.I2C() # uses board.SCL and board.SDA
 tca = adafruit_tca9548a.TCA9548A(i2c)
-ads = ADS.ADS1115(tca[5])
+
+def initADS():
+    for i in 5:
+        try:
+            return ADS.ADS1115(tca[5])
+        except:
+            time.sleep(2)
+    print("[FALLIMENTO] Impossibile inizializzare ADS dopo vari tentativi.")
+    return None
+
+ads = initADS()
 
 for channel in range(8):
     if tca[channel].try_lock():
@@ -27,9 +37,18 @@ for channel in range(8):
 
 greenLeds = [LED(17), LED(24)]
 redLeds = [LED(27), LED(23)]
-    
-# Inizializza sensori
-bme280_sensors = [adafruit_bme280.Adafruit_BME280_I2C(tca[2], address=0x76), adafruit_bme280.Adafruit_BME280_I2C(tca[3], address=0x76)]
+
+
+def initBME():
+    for i in 5:
+        try:
+            return [adafruit_bme280.Adafruit_BME280_I2C(tca[2], address=0x76), adafruit_bme280.Adafruit_BME280_I2C(tca[3], address=0x76)]
+        except:
+            time.sleep(2)
+    print("[FALLIMENTO] Impossibile inizializzare BME dopo vari tentativi.")
+    return None
+         
+bme280_sensors = initBME()
 
 app = Flask(__name__)
 
