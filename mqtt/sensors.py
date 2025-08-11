@@ -3,6 +3,7 @@ import paho.mqtt.client as mqtt
 import board
 import adafruit_tca9548a 
 from utils import initADS, initBME
+from gpiozero import LED
 
 
 MOISTURE_LEVEL = 14000
