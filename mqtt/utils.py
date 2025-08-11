@@ -3,7 +3,6 @@ import time
 from adafruit_bme280 import basic as adafruit_bme280
 import adafruit_ads1x15.ads1115 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
-from utils import is_half_hour, load_data, update_file, FILE_PATH, FILE_PATH2
 
 
 def initADS(tca, pin):
