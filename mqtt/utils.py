@@ -24,5 +24,3 @@ def initBME(tca):
             time.sleep(2)
     print("[FALLIMENTO] Impossibile inizializzare BME dopo vari tentativi.")
     return None
-         
-bme280_sensors = initBME()
