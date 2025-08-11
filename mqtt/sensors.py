@@ -4,11 +4,16 @@ import board
 import adafruit_tca9548a 
 from utils import initADS, initBME
 from gpiozero import LED
+import adafruit_ads1x15.ads1115 as ADS
+from adafruit_ads1x15.analog_in import AnalogIn
 
 
-MOISTURE_LEVEL = 14000
-WATER_LEVEL_MIN = 4000
-WATER_LEVEL_MAX = 14000
+MQTT_BROKER = "localhost"
+MQTT_PORT = 1883
+TOPIC_TEMPERATURA = "sensore/bme280/temperatura"
+TOPIC_UMIDITA = "sensore/bme280/umidità"
+TOPIC_PRESSIONE = "sensore/bme280/pressione"
+TOPIC_ACQUA = "sensore/analog/wl"
 
 PIN_TCA__ADS = 5
 PIN_TCA__BME = 2
@@ -33,22 +38,18 @@ redLed = LED(PIN_LED_ROSSO)
 
 ads = initADS(tca, PIN_TCA__ADS)
 bme280_sensor = initBME(tca)
-
-broker = "localhost"
-port = 1883
-username = "nomeutente"
-password = "password"
-topic = "sensore/temperatura"
+wl = AnalogIn(ads, ADS.P0)  # A0
 
 client = mqtt.Client()
-client.username_pw_set(username, password)
-client.connect(broker, port, 60)
+client.connect(MQTT_BROKER, MQTT_PORT, 60)
 
 try:
     while True:
-        temperatura = bme280_sensor.temperature
-        client.publish(topic, temperatura)
-        print(f"Pubblicato: {temperatura}   C")
+        client.publish(TOPIC_TEMPERATURA, bme280_sensor.temperature)
+        client.publish(TOPIC_UMIDITA, bme280_sensor.humidity)
+        client.publish(TOPIC_PRESSIONE, bme280_sensor.pressure)
+        client.publish(TOPIC_ACQUA, wl.value)
+        print("Pubblicati dati")
         time.sleep(5)
 except KeyboardInterrupt:
     print("Interrotto")
