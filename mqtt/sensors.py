@@ -2,7 +2,7 @@ import time
 import paho.mqtt.client as mqtt
 import board
 import adafruit_tca9548a 
-from utils import initADS, initBME, showData
+from utils import initADS, initBME, showData, checkScore
 from gpiozero import LED
 import adafruit_ads1x15.ads1115 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
@@ -62,17 +62,29 @@ try:
         h = bme280_sensor.humidity
         p = bme280_sensor.pressure
         wl_val = wl.value
+        wl_perc = round((wl_val - WL_MIN)/(WL_MAX - WL_MIN) * 100,2)
+        
+        status = checkScore(t,h,wl_perc)
+        if status:
+            redLed.off()
+            greenLed.on()
+        else:
+            greenLed.off()
+            redLed.on()
+        
         client.publish(TOPIC_TEMPERATURA, t)
         client.publish(TOPIC_UMIDITA, h)
         client.publish(TOPIC_PRESSIONE, p)
         client.publish(TOPIC_ACQUA, wl_val)
-        logging.info("Pubblicati dati")
+        
         showData(display, {
             "Temp": f"{round(t,2)}deg", 
             "Hum" : f"{round(h,2)}%", 
-            "Press": f"{round(p,2)}atm", 
-            "Water": f"{round((wl_val - WL_MIN)/(WL_MAX - WL_MIN) * 100,2)}%"
+            "Press": f"{round(p * 0.000987,4)}atm", 
+            "Water": f"{wl_perc}%"
         })
+        
+        logging.info("Pubblicati dati")
         time.sleep(5)
 except KeyboardInterrupt:
     logging.info("Interrotto")

@@ -45,3 +45,9 @@ def showData(display, data):
     # Mostra sul display
     display.image(image)
     display.show()
+    
+def checkScore(t, h, wl):
+    if 25 <= t <= 32 and 75 <= h <= 100 and wl > 30:
+        return 1
+    else:
+        return 0
