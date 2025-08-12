@@ -26,7 +26,7 @@ PIN_TCA__ADS = 5
 PIN_TCA__BME = 2
 PIN_TCA__DISPLAY = 1
 PIN_LED_VERDE = 27
-PIN_LED_ROSSO = 22
+PIN_LED_ROSSO = 23
 
 i2c = board.I2C() # uses board.SCL and board.SDA
 tca = adafruit_tca9548a.TCA9548A(i2c)
@@ -49,14 +49,6 @@ for channel in range(8):
 greenLed = LED(PIN_LED_VERDE)
 redLed = LED(PIN_LED_ROSSO)
 
-greenLed.on()
-time.sleep(2)
-greenLed.off()
-
-redLed.on()
-time.sleep(2)
-redLed.off()
-
 ads = initADS(tca, PIN_TCA__ADS)
 bme280_sensor = initBME(tca)
 wl = AnalogIn(ads, ADS.P0)  # A0
@@ -73,13 +65,10 @@ try:
         wl_perc = round((wl_val - WL_MIN)/(WL_MAX - WL_MIN) * 100,2)
         
         status = checkScore(t,h,wl_perc)
-        logging.info(f"{status}")
         if status:
-            logging.info(f"verde on")
             redLed.off()
             greenLed.on()
         else:
-            logging.info(f"rosso on")
             greenLed.off()
             redLed.on()
         
