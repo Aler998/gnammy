@@ -8,6 +8,9 @@ import adafruit_ads1x15.ads1115 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
 import logging
 
+import adafruit_ssd1306
+from PIL import Image, ImageDraw, ImageFont
+
 logging.basicConfig(level=logging.INFO)
 
 MQTT_BROKER = "localhost"
@@ -19,11 +22,35 @@ TOPIC_ACQUA = "sensore/analog/wl"
 
 PIN_TCA__ADS = 5
 PIN_TCA__BME = 2
+PIN_TCA__DISPLAY = 1
 PIN_LED_VERDE = 27
 PIN_LED_ROSSO = 22
 
 i2c = board.I2C() # uses board.SCL and board.SDA
 tca = adafruit_tca9548a.TCA9548A(i2c)
+display_i2c = tca[PIN_TCA__DISPLAY]
+
+# Inizializza il display SSD1306 (128x64)
+display = adafruit_ssd1306.SSD1306_I2C(128, 64, display_i2c)
+
+# Pulisce il display
+display.fill(0)
+display.show()
+
+# Crea un'immagine vuota in modalità 1-bit
+image = Image.new("1", (display.width, display.height))
+
+# Disegno
+draw = ImageDraw.Draw(image)
+font = ImageFont.load_default()
+
+# Scrive del testo
+draw.text((0, 0), "Ciao mondo!", font=font, fill=255)
+draw.text((0, 16), "TCA9548A ch 0", font=font, fill=255)
+
+# Mostra sul display
+display.image(image)
+display.show()
 
 # INIZIO DEBUG
 for channel in range(8):
