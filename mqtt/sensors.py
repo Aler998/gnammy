@@ -68,10 +68,10 @@ try:
         client.publish(TOPIC_ACQUA, wl_val)
         logging.info("Pubblicati dati")
         showData(display, {
-            "temperatura": t, 
-            "Umidità" : h, 
-            "Pressione": p, 
-            "Livello dell'Acqua": (wl_val - WL_MIN)/(WL_MAX - WL_MIN) * 100
+            "Temp": f"{round(t,2)}deg", 
+            "Hum" : f"{round(h,2)}%", 
+            "Press": f"{round(p,2)}atm", 
+            "Water": f"{round((wl_val - WL_MIN)/(WL_MAX - WL_MIN) * 10000,2)}%"
         })
         time.sleep(5)
 except KeyboardInterrupt:
