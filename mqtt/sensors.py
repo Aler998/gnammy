@@ -65,10 +65,13 @@ try:
         wl_perc = round((wl_val - WL_MIN)/(WL_MAX - WL_MIN) * 100,2)
         
         status = checkScore(t,h,wl_perc)
+        logging.info(f"{status}")
         if status:
+            logging.info(f"verde on")
             redLed.off()
             greenLed.on()
         else:
+            logging.info(f"rosso on")
             greenLed.off()
             redLed.on()
         
