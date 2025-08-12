@@ -6,7 +6,9 @@ from utils import initADS, initBME
 from gpiozero import LED
 import adafruit_ads1x15.ads1115 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
+import logging
 
+logging.basicConfig(level=logging.INFO)
 
 MQTT_BROKER = "localhost"
 MQTT_PORT = 1883
@@ -25,11 +27,10 @@ tca = adafruit_tca9548a.TCA9548A(i2c)
 
 # INIZIO DEBUG
 for channel in range(8):
-    print("Channel: 12345678")
     if tca[channel].try_lock():
-        print("Channel {}:".format(channel), end="")
+        logging.info("Channel {}:".format(channel), end="")
         addresses = tca[channel].scan()
-        print([hex(address) for address in addresses if address != 0x70])
+        logging.info([hex(address) for address in addresses if address != 0x70])
         tca[channel].unlock()
 # FINE DEBUG
 
@@ -49,8 +50,8 @@ try:
         client.publish(TOPIC_UMIDITA, bme280_sensor.humidity)
         client.publish(TOPIC_PRESSIONE, bme280_sensor.pressure)
         client.publish(TOPIC_ACQUA, wl.value)
-        print("Pubblicati dati")
+        logging.info("Pubblicati dati")
         time.sleep(5)
 except KeyboardInterrupt:
-    print("Interrotto")
+    logging.info("Interrotto")
     client.disconnect()
