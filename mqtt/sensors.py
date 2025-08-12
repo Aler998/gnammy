@@ -49,6 +49,14 @@ for channel in range(8):
 greenLed = LED(PIN_LED_VERDE)
 redLed = LED(PIN_LED_ROSSO)
 
+greenLed.on()
+time.sleep(2)
+greenLed.off()
+
+redLed.on()
+time.sleep(2)
+redLed.off()
+
 ads = initADS(tca, PIN_TCA__ADS)
 bme280_sensor = initBME(tca)
 wl = AnalogIn(ads, ADS.P0)  # A0
