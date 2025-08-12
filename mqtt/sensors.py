@@ -28,7 +28,7 @@ tca = adafruit_tca9548a.TCA9548A(i2c)
 # INIZIO DEBUG
 for channel in range(8):
     if tca[channel].try_lock():
-        logging.info("Channel {}:".format(channel), end="")
+        logging.info("Channel {}:".format(channel))
         addresses = tca[channel].scan()
         logging.info([hex(address) for address in addresses if address != 0x70])
         tca[channel].unlock()
