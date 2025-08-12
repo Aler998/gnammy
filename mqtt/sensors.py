@@ -26,7 +26,7 @@ PIN_TCA__ADS = 5
 PIN_TCA__BME = 2
 PIN_TCA__DISPLAY = 1
 PIN_LED_VERDE = 27
-PIN_LED_ROSSO = 23
+PIN_LED_ROSSO = 22
 
 i2c = board.I2C() # uses board.SCL and board.SDA
 tca = adafruit_tca9548a.TCA9548A(i2c)
