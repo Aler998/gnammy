@@ -2,14 +2,13 @@ import time
 import paho.mqtt.client as mqtt
 import board
 import adafruit_tca9548a 
-from utils import initADS, initBME
+from utils import initADS, initBME, showData
 from gpiozero import LED
 import adafruit_ads1x15.ads1115 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
 import logging
 
 import adafruit_ssd1306
-from PIL import Image, ImageDraw, ImageFont
 
 logging.basicConfig(level=logging.INFO)
 
@@ -19,6 +18,9 @@ TOPIC_TEMPERATURA = "sensore/bme280/temperatura"
 TOPIC_UMIDITA = "sensore/bme280/umidità"
 TOPIC_PRESSIONE = "sensore/bme280/pressione"
 TOPIC_ACQUA = "sensore/analog/wl"
+
+WL_MAX = 25000
+WL_MIN = 1000
 
 PIN_TCA__ADS = 5
 PIN_TCA__BME = 2
@@ -33,24 +35,7 @@ display_i2c = tca[PIN_TCA__DISPLAY]
 # Inizializza il display SSD1306 (128x64)
 display = adafruit_ssd1306.SSD1306_I2C(128, 64, display_i2c)
 
-# Pulisce il display
-display.fill(0)
-display.show()
 
-# Crea un'immagine vuota in modalità 1-bit
-image = Image.new("1", (display.width, display.height))
-
-# Disegno
-draw = ImageDraw.Draw(image)
-font = ImageFont.load_default()
-
-# Scrive del testo
-draw.text((0, 0), "Ciao mondo!", font=font, fill=255)
-draw.text((0, 16), "TCA9548A ch 0", font=font, fill=255)
-
-# Mostra sul display
-display.image(image)
-display.show()
 
 # INIZIO DEBUG
 for channel in range(8):
@@ -73,11 +58,21 @@ client.connect(MQTT_BROKER, MQTT_PORT, 60)
 
 try:
     while True:
-        client.publish(TOPIC_TEMPERATURA, bme280_sensor.temperature)
-        client.publish(TOPIC_UMIDITA, bme280_sensor.humidity)
-        client.publish(TOPIC_PRESSIONE, bme280_sensor.pressure)
-        client.publish(TOPIC_ACQUA, wl.value)
+        t = bme280_sensor.temperature
+        h = bme280_sensor.humidity
+        p = bme280_sensor.pressure
+        wl_val = wl.value
+        client.publish(TOPIC_TEMPERATURA, t)
+        client.publish(TOPIC_UMIDITA, h)
+        client.publish(TOPIC_PRESSIONE, p)
+        client.publish(TOPIC_ACQUA, wl_val)
         logging.info("Pubblicati dati")
+        showData(display, {
+            "temperatura": t, 
+            "Umidità" : h, 
+            "Pressione": p, 
+            "Livello dell'Acqua": (wl_val - WL_MIN)/(WL_MAX - WL_MIN) * 100
+        })
         time.sleep(5)
 except KeyboardInterrupt:
     logging.info("Interrotto")
