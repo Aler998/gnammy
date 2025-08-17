@@ -22,11 +22,11 @@ TOPIC_ACQUA = "sensore/analog/wl"
 WL_MAX = 25000
 WL_MIN = 1000
 
-PIN_TCA__ADS = 5
-PIN_TCA__BME = 2
-PIN_TCA__DISPLAY = 1
-PIN_LED_VERDE = 27
-PIN_LED_ROSSO = 22
+PIN_TCA__ADS = 0
+PIN_TCA__BME = 1
+PIN_TCA__DISPLAY = 2
+PIN_LED_VERDE = 22
+PIN_LED_ROSSO = 27
 
 i2c = board.I2C() # uses board.SCL and board.SDA
 tca = adafruit_tca9548a.TCA9548A(i2c)
@@ -50,7 +50,7 @@ greenLed = LED(PIN_LED_VERDE)
 redLed = LED(PIN_LED_ROSSO)
 
 ads = initADS(tca, PIN_TCA__ADS)
-bme280_sensor = initBME(tca)
+bme280_sensor = initBME(tca, PIN_TCA__BME)
 wl = AnalogIn(ads, ADS.P0)  # A0
 
 client = mqtt.Client()

@@ -17,10 +17,10 @@ def initADS(tca, pin):
 
 
 
-def initBME(tca):
+def initBME(tca, pin):
     for i in range(5):
         try:
-            return adafruit_bme280.Adafruit_BME280_I2C(tca[2], address=0x76)
+            return adafruit_bme280.Adafruit_BME280_I2C(tca[pin], address=0x76)
         except:
             time.sleep(2)
     print("[FALLIMENTO] Impossibile inizializzare BME dopo vari tentativi.")
