@@ -47,7 +47,7 @@ def showData(display, data):
     display.show()
     
 def checkScore(t, h, wl):
-    if 25 <= t <= 32 and 75 <= h <= 100 and wl > 30:
+    if 25 <= t <= 32 and 75 <= h <= 100:
         return 1
     else:
         return 0

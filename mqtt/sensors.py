@@ -17,10 +17,10 @@ MQTT_PORT = 1883
 TOPIC_TEMPERATURA = "sensore/bme280/temperatura"
 TOPIC_UMIDITA = "sensore/bme280/umidità"
 TOPIC_PRESSIONE = "sensore/bme280/pressione"
-TOPIC_ACQUA = "sensore/analog/wl"
-
-WL_MAX = 25000
-WL_MIN = 1000
+TOPIC_A1 = "sensore/analog/a1"
+TOPIC_A2 = "sensore/analog/a2"
+TOPIC_A3 = "sensore/analog/a3"
+TOPIC_A4 = "sensore/analog/a4"
 
 PIN_TCA__ADS = 0
 PIN_TCA__BME = 1
@@ -28,14 +28,11 @@ PIN_TCA__DISPLAY = 2
 PIN_LED_VERDE = 22
 PIN_LED_ROSSO = 27
 
-i2c = board.I2C() # uses board.SCL and board.SDA
+i2c = board.I2C()
 tca = adafruit_tca9548a.TCA9548A(i2c)
 display_i2c = tca[PIN_TCA__DISPLAY]
 
-# Inizializza il display SSD1306 (128x64)
 display = adafruit_ssd1306.SSD1306_I2C(128, 64, display_i2c)
-
-
 
 # INIZIO DEBUG
 for channel in range(8):
@@ -51,7 +48,11 @@ redLed = LED(PIN_LED_ROSSO)
 
 ads = initADS(tca, PIN_TCA__ADS)
 bme280_sensor = initBME(tca, PIN_TCA__BME)
-wl = AnalogIn(ads, ADS.P0)  # A0
+#lettura analogici
+a1 = AnalogIn(ads, ADS.P0)  # A0
+a2 = AnalogIn(ads, ADS.P1)  # A0
+a3 = AnalogIn(ads, ADS.P2)  # A0
+a4 = AnalogIn(ads, ADS.P3)  # A0
 
 client = mqtt.Client()
 client.connect(MQTT_BROKER, MQTT_PORT, 60)
@@ -61,10 +62,8 @@ try:
         t = bme280_sensor.temperature
         h = bme280_sensor.humidity
         p = bme280_sensor.pressure
-        wl_val = wl.value
-        wl_perc = round((wl_val - WL_MIN)/(WL_MAX - WL_MIN) * 100,2)
         
-        status = checkScore(t,h,wl_perc)
+        status = checkScore(t,h)
         if status:
             redLed.off()
             greenLed.on()
@@ -75,13 +74,20 @@ try:
         client.publish(TOPIC_TEMPERATURA, t)
         client.publish(TOPIC_UMIDITA, h)
         client.publish(TOPIC_PRESSIONE, p)
-        client.publish(TOPIC_ACQUA, wl_val)
+        
+        if a1:
+            client.publish(TOPIC_A1, a1.value)
+        if a2:
+            client.publish(TOPIC_A2, a2.value)
+        if a3:
+            client.publish(TOPIC_A2, a2.value)
+        if a4:
+            client.publish(TOPIC_A4, a4.value)
         
         showData(display, {
             "Temp": f"{round(t,2)}deg", 
             "Hum" : f"{round(h,2)}%", 
             "Press": f"{round(p * 0.000987,4)}atm", 
-            "Water": f"{wl_perc}%"
         })
         
         logging.info("Pubblicati dati")
