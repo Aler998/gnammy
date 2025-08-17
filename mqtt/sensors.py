@@ -75,14 +75,10 @@ try:
         client.publish(TOPIC_UMIDITA, h)
         client.publish(TOPIC_PRESSIONE, p)
         
-        if a1:
-            client.publish(TOPIC_A1, a1.value)
-        if a2:
-            client.publish(TOPIC_A2, a2.value)
-        if a3:
-            client.publish(TOPIC_A2, a2.value)
-        if a4:
-            client.publish(TOPIC_A4, a4.value)
+        client.publish(TOPIC_A1, a1.value)
+        client.publish(TOPIC_A2, a2.value)
+        client.publish(TOPIC_A3, a3.value)
+        client.publish(TOPIC_A4, a4.value)
         
         showData(display, {
             "Temp": f"{round(t,2)}deg", 
